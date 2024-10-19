@@ -42,7 +42,7 @@ function QueryDetailsModal({ queryId, onClose }) {
 
   if (loading) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center z-50">
+      <div className="fixed inset-0 flex items-center justify-center z-50 w-full h-screen bg-slate-200 text-3xl font-semibold transition-all ease-in-out  duration-300">
         Loading...
       </div>
     );

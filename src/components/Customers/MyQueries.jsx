@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "../../axios";
 import RaiseQuery from "./RaiseQuery";
 import QueryDetailsModal from "./QueriesModal"; // Import the modal component
-import TestElement2 from "../../TestElement2";
 
 function MyQueries() {
   const [queries, setQueries] = useState([]);
@@ -22,22 +21,21 @@ function MyQueries() {
     const [key, value] = item.split("=");
     jsonData[key] = value;
   });
-
+  const fetchQueries = async () => {
+    try {
+      const response = await axios.get("/customers/query/?action=1", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${jsonData.access_token}`,
+        },
+      });
+      setQueries(response.data.data);
+      console.log(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
-    const fetchQueries = async () => {
-      try {
-        const response = await axios.get("/customers/query/?action=1", {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${jsonData.access_token}`,
-          },
-        });
-        setQueries(response.data.data);
-        console.log(response.data.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
     fetchQueries();
   }, []);
 
@@ -115,7 +113,10 @@ function MyQueries() {
         </div>
         {raiseQuery ? (
           <div className="w-full h-full mt-8">
-            <RaiseQuery setRaiseQuery={setRaiseQuery} />
+            <RaiseQuery
+              setRaiseQuery={setRaiseQuery}
+              fetchQueries={fetchQueries}
+            />
           </div>
         ) : (
           <>

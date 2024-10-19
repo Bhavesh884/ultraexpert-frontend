@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "../../axios";
 
-function RaiseQuery({ setRaiseQuery }) {
+function RaiseQuery({ setRaiseQuery, fetchQueries }) {
   const [queryData, setQueryData] = useState({
     action: 1,
     subject: "",
@@ -40,18 +40,21 @@ function RaiseQuery({ setRaiseQuery }) {
     } catch (error) {
       console.log("Error raising query", error);
     }
+    fetchQueries();
   };
 
   return (
-    <div className="container mx-auto p-4 h-full bg-slate-600 rounded">
-      <h2 className="text-2xl font-semibold mb-4">Raise a Query</h2>
+    <div className="container w-full p-4 bg-white rounded-lg shadow-lg border border-solid border-slate-400">
+      <h2 className="text-xlmd:text-2xl lg:text-3xl font-bold mb-6 text-gray-800">
+        Raise a Query
+      </h2>
       <input
         type="text"
         name="subject"
         placeholder="Subject"
         value={queryData.subject}
         onChange={handleInputChange}
-        className="mb-4 p-2 w-full border rounded"
+        className="mb-4 p-2 md:p-4 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-400 transition duration-300 ease-in-out "
       />
       <input
         type="text"
@@ -59,7 +62,7 @@ function RaiseQuery({ setRaiseQuery }) {
         placeholder="Technology"
         value={queryData.technology_name}
         onChange={handleInputChange}
-        className="mb-4 p-2 w-full border rounded"
+        className="mb-4 p-2 md:p-4 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-400 transition duration-300 ease-in-out"
       />
       <input
         type="text"
@@ -67,25 +70,25 @@ function RaiseQuery({ setRaiseQuery }) {
         placeholder="Topic"
         value={queryData.topic}
         onChange={handleInputChange}
-        className="mb-4 p-2 w-full border rounded"
+        className="mb-4 p-2 md:p-4 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-400 transition duration-300 ease-in-out"
       />
       <textarea
         name="description"
         placeholder="Description"
         value={queryData.description}
         onChange={handleInputChange}
-        className="mb-4 p-2 w-full border rounded"
+        className="mb-4 p-2 md:p-4 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-400 transition duration-300 ease-in-out h-24"
       ></textarea>
-      <div className="flex justify-between">
+      <div className="flex justify-between space-x-2">
         <button
           onClick={() => setRaiseQuery(false)}
-          className=" rounded  py-2 px-4 bg-red-500 text-white hover:bg-red-600"
+          className="w-full py-2 md:py-3 px-3 bg-white border border-solid border-slate-400  text-gray-600 rounded-md shadow-md  focus:outline-none transition duration-300 ease-in-out"
         >
           Cancel
         </button>
         <button
           onClick={handleSubmit}
-          className="bg-blue-500 text-white py-2 px-4 rounded  hover:bg-blue-600"
+          className="w-full py-2 md:py-3 px-3 bg-black text-white rounded-md shadow-md  focus:outline-none  transition duration-300 ease-in-out"
         >
           Submit Query
         </button>
