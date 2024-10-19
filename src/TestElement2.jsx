@@ -1,176 +1,282 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "./axios";
+import RaiseQuery from "../src/components/Customers/RaiseQuery";
+import { FaSearch, FaCaretDown, FaFilter } from "react-icons/fa";
+import { BiReset } from "react-icons/bi";
+import QueryDetailsModal from "../src/components/Customers/QueriesModal"; // Import the modal component
 
-const EnterpriseRegistration = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    companySize: "",
-    registeredOn: "",
-    registrationNo: "",
-    websiteLink: "",
+function MyQueries() {
+  const [queries, setQueries] = useState([]);
+  const [raiseQuery, setRaiseQuery] = useState(false);
+  const [resolved, setResolved] = useState(false);
+  const [notResolved, notRetResolved] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [selectedQueryId, setSelectedQueryId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchBy, setSearchBy] = useState("topic");
+  const [dateFilter, setDateFilter] = useState("");
+
+  const cookies = document.cookie.split("; ");
+  const jsonData = {};
+
+  cookies.forEach((item) => {
+    const [key, value] = item.split("=");
+    jsonData[key] = value;
   });
+  const fetchQueries = async () => {
+    try {
+      const response = await axios.get("/customers/query/?action=1", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${jsonData.access_token}`,
+        },
+      });
+      setQueries(response.data.data);
+      console.log(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    fetchQueries();
+  }, []);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+  const handleResolve = async (queryId) => {
+    try {
+      const response = await axios.post(
+        `/customers/query/`,
+        { query_id: queryId, action: 2 },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${jsonData.access_token}`,
+          },
+        }
+      );
+      console.log(response.data);
+
+      setQueries(
+        queries.map((query) =>
+          query.id === queryId ? { ...query, status: "resolved" } : query
+        )
+      );
+    } catch (error) {
+      console.log("Error resolving query", error);
+    }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // API call to submit the data
-    console.log(formData);
+  const HandleNotResolved = () => {
+    setLoading(true);
+    setResolved(false);
+    notRetResolved(true);
+    setLoading(false);
   };
+
+  const HandleResolved = () => {
+    setLoading(true);
+    setResolved(true);
+    notRetResolved(false);
+    setLoading(false);
+  };
+
+  const clearFilters = () => {
+    setSearchTerm("");
+    setSearchBy("topic");
+    setDateFilter("");
+  };
+
+  const filteredQueries = queries
+    .filter((query) => {
+      const searchMatch = query[searchBy]
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+
+      const queryDate = new Date(query.date_created);
+      const selectedDate = dateFilter ? new Date(dateFilter) : null;
+      const dateMatch = !selectedDate || queryDate >= selectedDate;
+
+      return searchMatch && dateMatch;
+    })
+    .filter((query) =>
+      notResolved ? query.status === "" : query.status === "resolved"
+    );
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-green-400 via-blue-500 to-purple-600">
-      {/* Header Section */}
-      <header className="text-white text-center py-16">
-        <h1 className="text-5xl font-bold mb-4 drop-shadow-lg">
-          Welcome to Tech Innovations
-        </h1>
-        <p className="text-lg mb-8 drop-shadow-lg">
-          Join us in revolutionizing the future with cutting-edge AI and ML
-          solutions.
-        </p>
-        <button className="px-6 py-3 bg-white text-blue-600 font-bold rounded-full shadow-lg hover:bg-blue-200 transition-all duration-300">
-          Discover More
-        </button>
-      </header>
-
-      {/* Form Section */}
-      <section className="bg-white rounded-tl-3xl rounded-tr-3xl shadow-2xl py-12 px-8 lg:px-32 md:px-16 mt-8">
-        <h2 className="text-3xl text-center font-bold text-gray-800 mb-6">
-          Enterprise Registration
-        </h2>
-        <p className="text-center text-gray-600 mb-10">
-          Fill in the details below to register your enterprise.
-        </p>
-        <form
-          onSubmit={handleSubmit}
-          className="grid grid-cols-1 md:grid-cols-2 gap-8"
-        >
-          <div className="flex flex-col">
-            <label className="mb-2 text-gray-700 font-semibold" htmlFor="name">
-              Enterprise Name
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="px-4 py-2 border border-gray-300 rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter enterprise name"
-              required
+    <div className="w-full md:w-[68%] ">
+      <div className="container mx-auto sm:p-4">
+        <div className="flex justify-between mb-2">
+          <div className="text-2xl font-bold mb-4">My Queries</div>
+          <button
+            className="btnBlack text-sm text-white px-4 py-2 rounded"
+            onClick={() => setRaiseQuery(true)}
+          >
+            Raise a Query
+          </button>
+        </div>
+        {raiseQuery ? (
+          <div className="w-full h-full mt-8">
+            <RaiseQuery
+              setRaiseQuery={setRaiseQuery}
+              fetchQueries={fetchQueries}
             />
           </div>
+        ) : (
+          <>
+            <div className="flex justify-between items-center py-4 my-3">
+              <div className="flex items-center bg-gray-100 rounded-md px-4 py-2 w-[50%] border border-solid border-neutral-100">
+                <FaSearch className="text-gray-500" />
+                <input
+                  type="text"
+                  placeholder={`Search by ${searchBy}`}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="ml-2 bg-transparent focus:outline-none text-neutral-600"
+                />
+              </div>
+              <div className="flex items-center gap-4">
+                <button
+                  className="flex gap-1 items-center  px-4 py-2"
+                  onClick={() => setIsAvailabilityModalOpen(true)}
+                >
+                  <FaFilter className="mr-2" />
+                  <span className="font-semibold font-poppins text-desk-b-3 text-neutral-600">
+                    Availability{" "}
+                  </span>
+                  <FaCaretDown />
+                </button>
+                <button
+                  className="flex gap-1 items-center  px-4 py-2"
+                  onClick={() => setIsExperienceModalOpen(true)}
+                >
+                  <span className="font-semibold font-poppins text-desk-b-3 text-neutral-600">
+                    Experience
+                  </span>
+                  <FaCaretDown />
+                </button>
 
-          <div className="flex flex-col">
-            <label
-              className="mb-2 text-gray-700 font-semibold"
-              htmlFor="description"
-            >
-              Description
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              rows="3"
-              className="px-4 py-2 border border-gray-300 rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Describe your enterprise"
-              required
-            ></textarea>
-          </div>
+                <button
+                  onClick={clearFilters}
+                  className="text-error-300 px-4 py-2 flex gap-1 items-center"
+                >
+                  <BiReset />
+                  Reset Filters
+                </button>
+              </div>
+            </div>
+            <div className="flex flex-wrap md:flex-nowrap flex-col xs:flex-row gap-4 mb-6 mt-4">
+              <select
+                value={searchBy}
+                onChange={(e) => setSearchBy(e.target.value)}
+                className="border p-2 rounded w-full md:w-1/4 "
+              >
+                <option value="topic">Topic</option>
+                <option value="description">Description</option>
+                <option value="technology_name">Technology</option>
+              </select>
+              <input
+                type="text"
+                placeholder={`Search by ${searchBy}`}
+                className="border p-2 rounded w-full md:w-1/2 "
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <input
+                type="date"
+                className="border p-2 rounded w-full md:w-1/4 "
+                value={dateFilter}
+                onChange={(e) => setDateFilter(e.target.value)}
+              />
+              <button
+                onClick={clearFilters}
+                className="bg-red-500 text-white px-4 py-2 rounded "
+              >
+                Clear Filters
+              </button>
+            </div>
 
-          <div className="flex flex-col">
-            <label
-              className="mb-2 text-gray-700 font-semibold"
-              htmlFor="companySize"
-            >
-              Company Size
-            </label>
-            <input
-              type="number"
-              id="companySize"
-              name="companySize"
-              value={formData.companySize}
-              onChange={handleChange}
-              className="px-4 py-2 border border-gray-300 rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter company size"
-              required
-            />
-          </div>
+            <div className="flex mb-4 gap-3 border-b border-solid border-[#c7c7c7] pb-3 text-sm md:text-base overflow-x-scroll pr-2">
+              <div
+                className={`px-3 py-2 cursor-pointer font-semibold shrink-0 ${
+                  notResolved && `bg-[#ececec] rounded-sm`
+                }`}
+                onClick={() => HandleNotResolved()}
+              >
+                Unresolved Queries
+              </div>
+              <div
+                className={`px-3 py-2 cursor-pointer font-semibold shrink-0 ${
+                  resolved && `bg-[#ececec] rounded-sm`
+                }`}
+                onClick={() => HandleResolved()}
+              >
+                Resolved Queries
+              </div>
+            </div>
 
-          <div className="flex flex-col">
-            <label
-              className="mb-2 text-gray-700 font-semibold"
-              htmlFor="registeredOn"
-            >
-              Registered On
-            </label>
-            <input
-              type="date"
-              id="registeredOn"
-              name="registeredOn"
-              value={formData.registeredOn}
-              onChange={handleChange}
-              className="px-4 py-2 border border-gray-300 rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
+            <div>
+              {filteredQueries.length === 0 ? (
+                <p>No queries found</p>
+              ) : (
+                <div className="flex gap-4 flex-col">
+                  {filteredQueries.map((query) => (
+                    <div
+                      key={query.id}
+                      className="border border-slate-300 border-solid px-2 py-4 xs:p-4 rounded-lg shadow-lg flex flex-col md:flex-row items-start md:items-center gap-4"
+                    >
+                      {/* Image */}
+                      <img
+                        src="https://ultraxpert.s3.ap-south-1.amazonaws.com/Screenshot+2024-09-10+115557.png"
+                        alt="Query"
+                        className="w-full md:w-1/4 rounded-lg object-cover"
+                      />
 
-          <div className="flex flex-col">
-            <label
-              className="mb-2 text-gray-700 font-semibold"
-              htmlFor="registrationNo"
-            >
-              Registration Number
-            </label>
-            <input
-              type="text"
-              id="registrationNo"
-              name="registrationNo"
-              value={formData.registrationNo}
-              onChange={handleChange}
-              className="px-4 py-2 border border-gray-300 rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter registration number"
-              required
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label
-              className="mb-2 text-gray-700 font-semibold"
-              htmlFor="websiteLink"
-            >
-              Website Link
-            </label>
-            <input
-              type="url"
-              id="websiteLink"
-              name="websiteLink"
-              value={formData.websiteLink}
-              onChange={handleChange}
-              className="px-4 py-2 border border-gray-300 rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter website link"
-              required
-            />
-          </div>
-
-          <div className="col-span-2 text-center mt-4">
-            <button
-              type="submit"
-              className="px-8 py-3 bg-blue-600 text-white rounded-lg font-semibold shadow-lg hover:bg-blue-700 transition duration-300"
-            >
-              Register Enterprise
-            </button>
-          </div>
-        </form>
-      </section>
+                      {/* Query Info */}
+                      <div className="w-full md:w-3/4">
+                        <div className="w-full flex justify-end text-slate-600 text-xs">
+                          {new Date(query.date_created).toLocaleDateString()}
+                        </div>
+                        <div className="font-semibold text-lg mb-2">
+                          {query.topic}
+                        </div>
+                        <div className="text-gray-600 mb-2">
+                          {query.description}
+                        </div>
+                        <div className="text-sm text-gray-600 mb-2">
+                          Technology: {query.technology_name}
+                        </div>
+                        <div className="flex gap-2 justify-start mt-2">
+                          <button
+                            onClick={() => setSelectedQueryId(query.id)}
+                            className="bg-[#2A2A2A] text-white px-4 py-2 rounded"
+                          >
+                            View Replies
+                          </button>
+                          {query.status === "" && (
+                            <button
+                              onClick={() => handleResolve(query.id)}
+                              className="bg-green-500 text-white px-4 py-2 rounded"
+                            >
+                              Resolve
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </>
+        )}
+      </div>
+      {selectedQueryId && (
+        <QueryDetailsModal
+          queryId={selectedQueryId}
+          onClose={() => setSelectedQueryId(null)}
+        />
+      )}
     </div>
   );
-};
+}
 
-export default EnterpriseRegistration;
+export default MyQueries;

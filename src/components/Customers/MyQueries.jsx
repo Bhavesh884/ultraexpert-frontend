@@ -1,18 +1,23 @@
 import React, { useState, useEffect } from "react";
 import axios from "../../axios";
 import RaiseQuery from "./RaiseQuery";
+import { FaSearch, FaCaretDown, FaFilter } from "react-icons/fa";
+import { BiReset } from "react-icons/bi";
 import QueryDetailsModal from "./QueriesModal"; // Import the modal component
+import ReactModal from "react-modal";
 
 function MyQueries() {
   const [queries, setQueries] = useState([]);
   const [raiseQuery, setRaiseQuery] = useState(false);
   const [resolved, setResolved] = useState(false);
-  const [notResolved, notRetResolved] = useState(true);
+  const [notResolved, setNotResolved] = useState(true);
   const [loading, setLoading] = useState(false);
   const [selectedQueryId, setSelectedQueryId] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchBy, setSearchBy] = useState("topic");
   const [dateFilter, setDateFilter] = useState("");
+  const [isSearchByModalOpen, setIsSearchByModalOpen] = useState(false);
+  const [isDateFilterModalOpen, setIsDateFilterModalOpen] = useState(false);
 
   const cookies = document.cookie.split("; ");
   const jsonData = {};
@@ -21,6 +26,7 @@ function MyQueries() {
     const [key, value] = item.split("=");
     jsonData[key] = value;
   });
+
   const fetchQueries = async () => {
     try {
       const response = await axios.get("/customers/query/?action=1", {
@@ -35,6 +41,7 @@ function MyQueries() {
       console.log(error);
     }
   };
+
   useEffect(() => {
     fetchQueries();
   }, []);
@@ -66,14 +73,14 @@ function MyQueries() {
   const HandleNotResolved = () => {
     setLoading(true);
     setResolved(false);
-    notRetResolved(true);
+    setNotResolved(true);
     setLoading(false);
   };
 
   const HandleResolved = () => {
     setLoading(true);
     setResolved(true);
-    notRetResolved(false);
+    setNotResolved(false);
     setLoading(false);
   };
 
@@ -85,9 +92,9 @@ function MyQueries() {
 
   const filteredQueries = queries
     .filter((query) => {
-      const searchMatch = query[searchBy]
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase());
+      const searchMatch = (query[searchBy]?.toLowerCase() || "").includes(
+        searchTerm.toLowerCase()
+      );
 
       const queryDate = new Date(query.date_created);
       const selectedDate = dateFilter ? new Date(dateFilter) : null;
@@ -120,41 +127,52 @@ function MyQueries() {
           </div>
         ) : (
           <>
-            <div className="flex flex-wrap md:flex-nowrap flex-col xs:flex-row gap-4 mb-6 mt-4">
-              <select
-                value={searchBy}
-                onChange={(e) => setSearchBy(e.target.value)}
-                className="border p-2 rounded w-full md:w-1/4 "
-              >
-                <option value="topic">Topic</option>
-                <option value="description">Description</option>
-                <option value="technology_name">Technology</option>
-              </select>
-              <input
-                type="text"
-                placeholder={`Search by ${searchBy}`}
-                className="border p-2 rounded w-full md:w-1/2 "
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <input
-                type="date"
-                className="border p-2 rounded w-full md:w-1/4 "
-                value={dateFilter}
-                onChange={(e) => setDateFilter(e.target.value)}
-              />
-              <button
-                onClick={clearFilters}
-                className="bg-red-500 text-white px-4 py-2 rounded "
-              >
-                Clear Filters
-              </button>
+            <div className="flex justify-between items-center rounded-md p-4 my-6 shadow-md  border border-solid border-slate-400  bg-[#ececec]">
+              <div className="flex items-center  rounded-sm px-4 py-2 w-[38%] border border-solid border-slate-400 bg-white">
+                <FaSearch className="text-gray-500" />
+                <input
+                  type="text"
+                  placeholder={`Search by ${searchBy}`}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="ml-2 bg-transparent focus:outline-none text-neutral-600 w-full"
+                />
+              </div>
+              <div className="flex items-center gap-4">
+                <button
+                  className="flex gap-1 items-center px-4 py-2 bg-transparent shrink-0"
+                  onClick={() => setIsSearchByModalOpen(true)}
+                >
+                  <FaFilter className="mr-2" />
+                  <span className="font-semibold font-poppins text-desk-b-3 text-black">
+                    Search By{" "}
+                  </span>
+                  <FaCaretDown />
+                </button>
+                <button
+                  className="flex gap-1 items-center px-4 py-2 bg-transparent shrink-0"
+                  onClick={() => setIsDateFilterModalOpen(true)}
+                >
+                  <span className="font-semibold font-poppins text-desk-b-3 text-black">
+                    Select Date
+                  </span>
+                  <FaCaretDown />
+                </button>
+
+                <button
+                  onClick={clearFilters}
+                  className="text-red-700  bg-transparent px-4 py-2 flex gap-1 items-center rounded-sm  font-semibold"
+                >
+                  <BiReset />
+                  Reset Filters
+                </button>
+              </div>
             </div>
 
             <div className="flex mb-4 gap-3 border-b border-solid border-[#c7c7c7] pb-3 text-sm md:text-base overflow-x-scroll pr-2">
               <div
                 className={`px-3 py-2 cursor-pointer font-semibold shrink-0 ${
-                  notResolved && `bg-[#ececec] rounded-sm`
+                  notResolved && `bg-[#ececec] rounded-md`
                 }`}
                 onClick={() => HandleNotResolved()}
               >
@@ -162,7 +180,7 @@ function MyQueries() {
               </div>
               <div
                 className={`px-3 py-2 cursor-pointer font-semibold shrink-0 ${
-                  resolved && `bg-[#ececec] rounded-sm`
+                  resolved && `bg-[#ececec] rounded-md`
                 }`}
                 onClick={() => HandleResolved()}
               >
@@ -229,9 +247,102 @@ function MyQueries() {
       {selectedQueryId && (
         <QueryDetailsModal
           queryId={selectedQueryId}
+          isOpen={selectedQueryId !== null}
           onClose={() => setSelectedQueryId(null)}
         />
       )}
+
+      {/* Modal for Search By */}
+      <ReactModal
+        isOpen={isSearchByModalOpen}
+        onRequestClose={() => setIsSearchByModalOpen(false)}
+        className="bg-white rounded-lg shadow-lg p-6 z-[999999]"
+        overlayClassName="fixed inset-0 bg-gray-600 bg-opacity-60 flex justify-center items-center z-[999999]"
+      >
+        <h3 className="text-lg font-bold mb-4">Select Search By Field</h3>
+        <div className="flex flex-wrap flex-row gap-3 items-center justify-start w-full ">
+          <div>
+            <button
+              className={`px-4 py-2 rounded-full ${
+                searchBy === "topic"
+                  ? "btnBlack text-white"
+                  : " border border-solid border-[#c7c7c7]"
+              }`}
+              onClick={() => setSearchBy("topic")}
+            >
+              Topic
+            </button>
+          </div>
+          <div>
+            <button
+              className={`px-4 py-2 rounded-full ${
+                searchBy === "description"
+                  ? "btnBlack text-white"
+                  : " border border-solid border-[#c7c7c7]"
+              }`}
+              onClick={() => setSearchBy("description")}
+            >
+              Description
+            </button>
+          </div>
+          <div>
+            <button
+              className={`px-4 py-2 rounded-full ${
+                searchBy === "technology_name"
+                  ? "btnBlack text-white"
+                  : " border border-solid border-[#c7c7c7]"
+              }`}
+              onClick={() => setSearchBy("technology_name")}
+            >
+              Technology Name
+            </button>
+          </div>
+        </div>
+        <div className="flex gap-4 justify-end mt-4">
+          <button
+            onClick={() => setIsSearchByModalOpen(false)}
+            className="text-gray-700 px-4 py-2 mr-2 rounded-md border border-solid border-[#c7c7c7] bg-white"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => setIsSearchByModalOpen(false)}
+            className="btnBlack text-white px-4 py-2 rounded-md"
+          >
+            Apply Search Filter
+          </button>
+        </div>
+      </ReactModal>
+
+      {/* Modal for Date Filter */}
+      <ReactModal
+        isOpen={isDateFilterModalOpen}
+        onRequestClose={() => setIsDateFilterModalOpen(false)}
+        className="bg-white rounded-lg shadow-lg p-6 z-[999999]"
+        overlayClassName="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-[999999]"
+      >
+        <h3 className="text-lg font-bold mb-4">Select Date</h3>
+        <input
+          type="date"
+          value={dateFilter}
+          onChange={(e) => setDateFilter(e.target.value)}
+          className="w-full px-4 py-2 rounded-md border border-gray-300"
+        />
+        <div className="flex justify-end mt-4">
+          <button
+            onClick={() => setIsDateFilterModalOpen(false)}
+            className="text-gray-700 px-4 py-2 mr-2 rounded-md border border-solid border-[#c7c7c7] bg-white"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => setIsDateFilterModalOpen(false)}
+            className="btnBlack text-white px-4 py-2 rounded-md"
+          >
+            Apply Date Filter
+          </button>
+        </div>
+      </ReactModal>
     </div>
   );
 }
