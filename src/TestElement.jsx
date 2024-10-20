@@ -2,6 +2,13 @@
 // import { auth, provider } from "./components/Firebase/config";
 // import { signInWithPopup } from "firebase/auth";
 import TestElement2 from "./TestElement2";
+import React from "react";
+
+const TestElement = () => {
+  return <TestElement2 />;
+};
+
+export default TestElement;
 
 // import { useNavigate } from "react-router-dom";
 // import userImage from "./assets/images/image.png";
@@ -740,11 +747,3 @@ import TestElement2 from "./TestElement2";
 // };
 
 // export default SignUp;
-
-import React from "react";
-
-const TestElement = () => {
-  return <TestElement2 />;
-};
-
-export default TestElement;
