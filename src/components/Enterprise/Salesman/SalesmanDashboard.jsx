@@ -8,8 +8,8 @@ import { PiNotebookBold } from "react-icons/pi";
 import { IoSettingsOutline } from "react-icons/io5";
 import { BiLogOut } from "react-icons/bi";
 import { FaRegHeart } from "react-icons/fa";
-import AddOwnerForm from "./components/Enterprise/Salesman/AddOwner";
-import AddEnterpriseForm from "./components/Enterprise/Salesman/AddEnterprise";
+import AddOwnerForm from "./AddOwner";
+import AddEnterpriseForm from "./AddEnterprise";
 
 const SalesmanDashboard = () => {
   const [activeTab, setActiveTab] = useState("Dashboard");

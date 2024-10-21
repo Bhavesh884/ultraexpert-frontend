@@ -67,13 +67,12 @@ import ExpertProfileShimmer from "./subsitutes/Shimmers/ExpertProfileShimmer.jsx
 import WalletPage from "./components/Experts/WalletPage.jsx";
 import MyQueries from "./components/Customers/MyQueries.jsx";
 import QueriesPage from "./components/Experts/Queries.jsx";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 // import CreateMeeting from "./components/Jitsi/CreateMeeting.jsx";
 // import Docs from "./components/UltraXpert_docs/Docs.jsx";
 // import TestNavbar from "./TestNavbar.jsx";
 
-const userId = "user123"; // Replace with actual user ID
-const amount = 1000; // Replace with actual amount
-const callbackUrl = "/"; // Replace with actual callback URL
 const Layout = () => {
   const action = useNavigationType();
   const pathname = useLocation().pathname;
@@ -89,6 +88,14 @@ const Layout = () => {
       <Navbar />
       <Outlet />
       <Footer />
+      <ToastContainer className="custom-toast-container"
+        position="top-right"  // Or "top-right", "top-left", etc.
+        autoClose={3000}
+        hideProgressBar={false}
+        closeOnClick
+        pauseOnHover
+        draggable
+      />
     </>
   );
 };

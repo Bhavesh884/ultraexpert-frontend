@@ -8,18 +8,15 @@ import { PiNotebookBold } from "react-icons/pi";
 import { IoSettingsOutline } from "react-icons/io5";
 import { BiLogOut } from "react-icons/bi";
 import { FaRegHeart } from "react-icons/fa";
-import AddOwnerForm from "./components/Enterprise/Salesman/AddOwner";
-import AddEnterpriseForm from "./components/Enterprise/Salesman/AddEnterprise";
 
-const SalesmanDashboard = () => {
+import SalesmanRequestsPage from "./components/Enterprise/Admin/SalesmanRequests";
+const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("Dashboard");
   return (
     <div className="flex gap-2 w-full">
-      <div className="bg-white text-neutral-1000 w-full md:w-[20%] p-4 hidden md:flex md:flex-col justify-between fixed md:relative bottom-0 md:bottom-auto z-10 md:z-auto border-r border-solid border-neutral-100 mt-[60px] overflow-y-scroll">
+      <div className="bg-white text-neutral-1000 w-full md:w-[20%] p-4 hidden md:flex md:flex-col justify-between fixed md:relative bottom-0 md:bottom-auto z-10 md:z-auto border-r border-solid border-neutral-100 mt-[60px]">
         <div>
-          <h3 className="text-lg text-blue-400 font-bold text-center shrink-0">
-            Salesman Dashboard
-          </h3>
+          <h3 className="text-xl font-bold text-center">Admin Dashboard</h3>
           <div className="flex md:flex-col space-x-4 md:space-x-0 md:space-y-4 w-full justify-around border-b border-solid border-neutral-100 pb-4">
             <button
               onClick={() => setActiveTab("Dashboard")}
@@ -31,22 +28,22 @@ const SalesmanDashboard = () => {
               <span className="hidden md:block">Dashboard</span>
             </button>
             <button
-              onClick={() => setActiveTab("AddOwner")}
+              onClick={() => setActiveTab("Salesman")}
               className={`flex items-center justify-center md:justify-start space-x-2 md:space-x-4 w-full px-4 py-2 rounded-lg ${
-                activeTab === "AddOwner" ? "bg-blue-400 text-white" : ""
+                activeTab === "Salesman" ? "bg-blue-400 text-white" : ""
               }`}
             >
               <LuLayoutDashboard className="w-5 h-5" />
-              <span className="hidden md:block">Add Owner</span>
+              <span className="hidden md:block">Salesman</span>
             </button>
             <button
-              onClick={() => setActiveTab("AddEnterprise")}
+              onClick={() => setActiveTab("Students")}
               className={`flex items-center justify-center md:justify-start space-x-2 md:space-x-4 w-full px-4 py-2 rounded-lg ${
-                activeTab === "AddEnterprise" ? "bg-blue-400 text-white" : ""
+                activeTab === "Students" ? "bg-blue-400 text-white" : ""
               }`}
             >
               <FaRegHeart className="w-5 h-5" />
-              <span className="hidden md:block">Add Enterprise</span>
+              <span className="hidden md:block">Students</span>
             </button>
             <button
               onClick={() => setActiveTab("Bookings")}
@@ -109,12 +106,11 @@ const SalesmanDashboard = () => {
           </div>
         </div>
       </div>
-      <div className="w-full md:w-[80%] mt-20 overflow-y-scroll pl-2 pr-6">
-        {activeTab === "AddOwner" && <AddOwnerForm />}
-        {activeTab === "AddEnterprise" && <AddEnterpriseForm />}
+      <div className="w-full md:w-[80%] mt-20">
+        <SalesmanRequestsPage />
       </div>
     </div>
   );
 };
 
-export default SalesmanDashboard;
+export default AdminDashboard;
