@@ -12,7 +12,7 @@ import {
   FiHash,
 } from "react-icons/fi";
 import { toast } from "react-toastify";
-import axios from "../../../axios";
+import axios from "./axios";
 
 //get cookies
 const cookies = document.cookie.split("; ");

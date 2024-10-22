@@ -8,8 +8,8 @@ import { PiNotebookBold } from "react-icons/pi";
 import { IoSettingsOutline } from "react-icons/io5";
 import { BiLogOut } from "react-icons/bi";
 import { FaRegHeart } from "react-icons/fa";
-import AddOwnerForm from "./AddOwner";
 import AddEnterpriseForm from "./AddEnterprise";
+import GetAllEnterprise from "../Controler/GetAllEnterprise";
 
 const SalesmanDashboard = () => {
   const [activeTab, setActiveTab] = useState("Dashboard");
@@ -31,13 +31,13 @@ const SalesmanDashboard = () => {
               <span className="hidden md:block">Dashboard</span>
             </button>
             <button
-              onClick={() => setActiveTab("AddOwner")}
+              onClick={() => setActiveTab("EnterpriseList")}
               className={`flex items-center justify-center md:justify-start space-x-2 md:space-x-4 w-full px-4 py-2 rounded-lg ${
-                activeTab === "AddOwner" ? "bg-blue-400 text-white" : ""
+                activeTab === "EnterpriseList" ? "bg-blue-400 text-white" : ""
               }`}
             >
               <LuLayoutDashboard className="w-5 h-5" />
-              <span className="hidden md:block">Add Owner</span>
+              <span className="hidden md:block">Enterprise List</span>
             </button>
             <button
               onClick={() => setActiveTab("AddEnterprise")}
@@ -110,8 +110,8 @@ const SalesmanDashboard = () => {
         </div>
       </div>
       <div className="w-full md:w-[80%] mt-20 overflow-y-scroll pl-2 pr-6">
-        {activeTab === "AddOwner" && <AddOwnerForm />}
         {activeTab === "AddEnterprise" && <AddEnterpriseForm />}
+        {activeTab === "EnterpriseList" && <GetAllEnterprise />}
       </div>
     </div>
   );

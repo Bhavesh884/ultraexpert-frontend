@@ -87,11 +87,19 @@ const RequestCard = ({ request, onClick }) => {
         {request.id}
       </div>
       <div className="w-full justify-center items-center flex">
-        <img
-          src={request.profile_img}
-          className="w-16 h-16 rounded-full object-cover"
-          alt="profile img"
-        />
+        {request.profile_img.length > 0 ? (
+          <img
+            src={request.profile_img}
+            className="w-16 h-16 rounded-full object-cover"
+            alt="profile img"
+          />
+        ) : (
+          <img
+            src="https://plus.unsplash.com/premium_photo-1710911198710-3097c518f0e1?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            className="w-16 h-16 rounded-full object-cover"
+            alt="profile img"
+          />
+        )}
       </div>
       <h2 className="text-lg font-semibold text-center mb-2">
         {request.first_name} {request.last_name}
@@ -123,33 +131,7 @@ const SalesmanRequestsPage = () => {
     const [key, value] = item.split("=");
     jsonData[key] = value;
   });
-  const [requests, setRequests] = useState([
-    {
-      id: 1,
-      first_name: "John",
-      last_name: "Doe",
-      email: "johndoe@gmail.com",
-      mobile: "+123456789",
-      dob: "1990-01-10",
-      profile_img:
-        "https://images.unsplash.com/photo-1702478492816-843fb767d0f1?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      reason: "I want to contribute to the sales team.",
-      status: "pending",
-    },
-    {
-      id: 2,
-      first_name: "Jane",
-      last_name: "Smith",
-      email: "janesmith@gmail.com",
-      mobile: "+987654321",
-      dob: "1992-04-12",
-      profile_img:
-        "https://images.unsplash.com/photo-1702478492816-843fb767d0f1?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      reason: "Experienced in sales and marketing.",
-      status: "accepted",
-    },
-    // More requests...
-  ]);
+  const [requests, setRequests] = useState([]);
 
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
@@ -181,6 +163,7 @@ const SalesmanRequestsPage = () => {
       );
       console.log(response.data);
       toast.success("Request Accepted");
+      fetchAllSalesmanRequests();
     } catch (error) {
       console.log(error);
       toast.error("Error while accepting request");
@@ -204,6 +187,7 @@ const SalesmanRequestsPage = () => {
       );
       console.log(response.data);
       toast.success("Request Rejected");
+      fetchAllSalesmanRequests();
     } catch (error) {
       console.log(error);
       toast.error("Error while rejecting request");
@@ -219,8 +203,12 @@ const SalesmanRequestsPage = () => {
       });
       setRequests(response.data.salesman_requests);
       console.log(response.data.salesman_requests);
+      toast.success("Requests fetched successfully");
     } catch (error) {
       console.error(error);
+      if (error.response.data.msg === "No requests found.") {
+        toast.warn("No requests found.");
+      }
       toast.error("Error while fetching requests");
     }
   };
@@ -230,7 +218,10 @@ const SalesmanRequestsPage = () => {
   }, []);
 
   return (
-    <div className="p-8">
+    <div className="p-8 ">
+      <h1 className="text-3xl text-teal-500 font-bold mb-6">
+        Salesman Requests
+      </h1>
       {/* Filter Tray */}
       <div className="flex gap-4 justify-between items-center mb-6 flex-wrap">
         {/* Search Bar */}
@@ -283,7 +274,7 @@ const SalesmanRequestsPage = () => {
       </div>
 
       {/* Request Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 bg-slate-200 rounded-lg p-4 py-6">
         {filteredRequests?.map((request) => (
           <RequestCard
             key={request.id}
@@ -298,8 +289,14 @@ const SalesmanRequestsPage = () => {
         <RequestModal
           request={selectedRequest}
           onClose={() => setSelectedRequest(null)}
-          onAccept={() => AcceptSalesmanRequest(selectedRequest.id)}
-          onReject={() => RejectSalesmanRequest(selectedRequest.id)}
+          onAccept={() => {
+            AcceptSalesmanRequest(selectedRequest.id);
+            setSelectedRequest(null);
+          }}
+          onReject={() => {
+            RejectSalesmanRequest(selectedRequest.id);
+            setSelectedRequest(null);
+          }}
         />
       )}
     </div>

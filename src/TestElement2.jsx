@@ -8,17 +8,16 @@ import { PiNotebookBold } from "react-icons/pi";
 import { IoSettingsOutline } from "react-icons/io5";
 import { BiLogOut } from "react-icons/bi";
 import { FaRegHeart } from "react-icons/fa";
-import AddOwnerForm from "./components/Enterprise/Salesman/AddOwner";
-import AddEnterpriseForm from "./components/Enterprise/Salesman/AddEnterprise";
+import GetAllEnterprise from "./components/Enterprise/Controler/GetAllEnterprise";
 
-const SalesmanDashboard = () => {
+const ControlerDashboard = () => {
   const [activeTab, setActiveTab] = useState("Dashboard");
   return (
     <div className="flex gap-2 w-full">
       <div className="bg-white text-neutral-1000 w-full md:w-[20%] p-4 hidden md:flex md:flex-col justify-between fixed md:relative bottom-0 md:bottom-auto z-10 md:z-auto border-r border-solid border-neutral-100 mt-[60px] overflow-y-scroll">
         <div>
           <h3 className="text-lg text-blue-400 font-bold text-center shrink-0">
-            Salesman Dashboard
+            Controler Dashboard
           </h3>
           <div className="flex md:flex-col space-x-4 md:space-x-0 md:space-y-4 w-full justify-around border-b border-solid border-neutral-100 pb-4">
             <button
@@ -31,13 +30,13 @@ const SalesmanDashboard = () => {
               <span className="hidden md:block">Dashboard</span>
             </button>
             <button
-              onClick={() => setActiveTab("AddOwner")}
+              onClick={() => setActiveTab("EnterpriseList")}
               className={`flex items-center justify-center md:justify-start space-x-2 md:space-x-4 w-full px-4 py-2 rounded-lg ${
-                activeTab === "AddOwner" ? "bg-blue-400 text-white" : ""
+                activeTab === "EnterpriseList" ? "bg-blue-400 text-white" : ""
               }`}
             >
               <LuLayoutDashboard className="w-5 h-5" />
-              <span className="hidden md:block">Add Owner</span>
+              <span className="hidden md:block">Enterprise List</span>
             </button>
             <button
               onClick={() => setActiveTab("AddEnterprise")}
@@ -110,11 +109,10 @@ const SalesmanDashboard = () => {
         </div>
       </div>
       <div className="w-full md:w-[80%] mt-20 overflow-y-scroll pl-2 pr-6">
-        {activeTab === "AddOwner" && <AddOwnerForm />}
-        {activeTab === "AddEnterprise" && <AddEnterpriseForm />}
+        {activeTab === "EnterpriseList" && <GetAllEnterprise />}
       </div>
     </div>
   );
 };
 
-export default SalesmanDashboard;
+export default ControlerDashboard;

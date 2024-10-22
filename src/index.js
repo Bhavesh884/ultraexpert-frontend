@@ -69,6 +69,10 @@ import MyQueries from "./components/Customers/MyQueries.jsx";
 import QueriesPage from "./components/Experts/Queries.jsx";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import SalesmanRequestForm from "./components/Enterprise/Salesman/SalesmanRequestForm.jsx";
+import AdminDashboard from "./components/Enterprise/Admin/AdminDashboard.jsx";
+import SalesmanDashboard from "./components/Enterprise/Salesman/SalesmanDashboard.jsx";
+import ControlerDashboard from "./components/Enterprise/Controler/ControlerDashboard.jsx";
 // import CreateMeeting from "./components/Jitsi/CreateMeeting.jsx";
 // import Docs from "./components/UltraXpert_docs/Docs.jsx";
 // import TestNavbar from "./TestNavbar.jsx";
@@ -171,6 +175,25 @@ const appRouter = createBrowserRouter([
       //   path: "/editprofilecustomer",
       //   element: <EditProfileCustomer />,
       // },
+      {
+        path: "/becomesalesman",
+        element: <SalesmanRequestForm />,
+      },
+      {
+        path: "/adminDashboard",
+        element: <AdminDashboard />,
+      },
+      {
+        path: "/salesmandashboard",
+        element: <SalesmanDashboard />,
+      },
+      {
+        path: "/controlerdashboard",
+        element: <ControlerDashboard />,
+      },
+
+
+
       {
         path: "/editprofileexpert",
         element: <EditProfileExpert />,

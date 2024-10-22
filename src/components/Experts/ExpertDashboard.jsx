@@ -64,6 +64,7 @@ import UpdateProject from "./UpdateProjeect";
 import EditProfileExpert from "../Auth/EditProfileExpert";
 import SkillList from "../GetCertified/Instructions";
 import TextShimmer from "../../subsitutes/Shimmers/TextShimmer";
+import { toast } from "react-toastify";
 
 const generateRandomData = () => {
   const today = new Date();
@@ -2008,7 +2009,62 @@ const ExpertDashboard = () => {
       console.log(error);
     }
   };
+  const addTrainer = async () => {
+    const cookies = document.cookie.split("; ");
+    const jsonData = {};
+    cookies.forEach((item) => {
+      const [key, value] = item.split("=");
+      jsonData[key] = value;
+    });
+    try {
+      const response = await axios.post(
+        "/enterprises/",
+        {
+          action: 2,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${jsonData.access_token}`,
+          },
+        }
+      );
 
+      console.log(response.data);
+      toast.success("Trainer added successfully");
+    } catch (error) {
+      console.log(error);
+      toast.error("Error while adding trainer");
+    }
+  };
+  const removeTrainer = async () => {
+    const cookies = document.cookie.split("; ");
+    const jsonData = {};
+    cookies.forEach((item) => {
+      const [key, value] = item.split("=");
+      jsonData[key] = value;
+    });
+    try {
+      const response = await axios.post(
+        "/enterprises/",
+        {
+          action: 4,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${jsonData.access_token}`,
+          },
+        }
+      );
+
+      console.log(response.data);
+      toast.success("Trainer Profile removed successfully");
+    } catch (error) {
+      console.log(error);
+      toast.error("Error while removing trainer profile");
+    }
+  };
   return (
     <div
       className={`
@@ -2071,6 +2127,18 @@ const ExpertDashboard = () => {
                 onClick={handleCopyToClipboard}
               />
               <IoMdShareAlt />
+            </div>
+            <div
+              onClick={addTrainer}
+              className="px-4 py-3 btnBlack hover:bg-[#0a0a0a] text-white border border-white border-solid mt-4 font-bold rounded-md cursor-pointer"
+            >
+              Turn to Trainer's Profile
+            </div>
+            <div
+              onClick={removeTrainer}
+              className="px-4 py-3  border border-[#bebebe] border-solid mt-4 font-bold rounded-md cursor-pointer"
+            >
+              Turn off Trainer's Profile.
             </div>
           </div>
           <div className="bg-[#e7e7e7]">
