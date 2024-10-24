@@ -42,7 +42,7 @@ const TestimonialCard = ({ expert_id, id, user, content, date_created }) => {
           onClick={() => navigate(`/experts/expertprofile/${expert_id}`)}
         >
           <img
-            className="shrink-0 w-[10vw] h-[10vw] xs:w-[9.5vw] xs:h-[9.5vw] sm:h-[4.5vw] sm:w-[4.5vw] rounded-full object-cover border-white border-solid border-[0.15vw] sm:border-[0.2vw]"
+            className="shrink-0 w-[10vw] h-[10vw] xs:w-[9.5vw] xs:h-[9.5vw] sm:h-[4.5vw] sm:w-[4.5vw] rounded-full object-top object-cover border-white border-solid border-[0.15vw] sm:border-[0.2vw]"
             src={user?.profile_img}
             alt=""
           />
@@ -449,7 +449,11 @@ const Landing = () => {
     if (!refresh_token) {
       //clear local storage and go back to login
       localStorage.clear();
-      navigate("/login");
+      window.location.reload();
+      document.cookie =
+        "access_token=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;";
+      document.cookie =
+        "refresh_token=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;";
     } else {
       try {
         const res = await axios.post(

@@ -64,15 +64,19 @@ import SkillList from "./components/GetCertified/Instructions.js";
 import UpdateService from "./components/Services/UpdateService.jsx";
 import TestElement from "./TestElement.jsx";
 import ExpertProfileShimmer from "./subsitutes/Shimmers/ExpertProfileShimmer.jsx";
-import Students from "./Students.js";
-import VisitorForm from "./VisitorForm.jsx";
+import WalletPage from "./components/Experts/WalletPage.jsx";
+import MyQueries from "./components/Customers/MyQueries.jsx";
+import QueriesPage from "./components/Experts/Queries.jsx";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+import SalesmanRequestForm from "./components/Enterprise/Salesman/SalesmanRequestForm.jsx";
+import AdminDashboard from "./components/Enterprise/Admin/AdminDashboard.jsx";
+import SalesmanDashboard from "./components/Enterprise/Salesman/SalesmanDashboard.jsx";
+import ControlerDashboard from "./components/Enterprise/Controler/ControlerDashboard.jsx";
 // import CreateMeeting from "./components/Jitsi/CreateMeeting.jsx";
 // import Docs from "./components/UltraXpert_docs/Docs.jsx";
 // import TestNavbar from "./TestNavbar.jsx";
 
-const userId = "user123"; // Replace with actual user ID
-const amount = 1000; // Replace with actual amount
-const callbackUrl = "/"; // Replace with actual callback URL
 const Layout = () => {
   const action = useNavigationType();
   const pathname = useLocation().pathname;
@@ -88,6 +92,14 @@ const Layout = () => {
       <Navbar />
       <Outlet />
       <Footer />
+      <ToastContainer className="custom-toast-container"
+        position="top-right"  // Or "top-right", "top-left", etc.
+        autoClose={3000}
+        hideProgressBar={false}
+        closeOnClick
+        pauseOnHover
+        draggable
+      />
     </>
   );
 };
@@ -172,8 +184,31 @@ const appRouter = createBrowserRouter([
       //   element: <EditProfileCustomer />,
       // },
       {
+        path: "/becomesalesman",
+        element: <SalesmanRequestForm />,
+      },
+      {
+        path: "/adminDashboard",
+        element: <AdminDashboard />,
+      },
+      {
+        path: "/salesmandashboard",
+        element: <SalesmanDashboard />,
+      },
+      {
+        path: "/controlerdashboard",
+        element: <ControlerDashboard />,
+      },
+
+
+
+      {
         path: "/editprofileexpert",
         element: <EditProfileExpert />,
+      },
+      {
+        path: "/queries",
+        element: <QueriesPage />,
       },
       {
         path: "/experts",
@@ -335,6 +370,10 @@ const appRouter = createBrowserRouter([
             element: <MyBooking />,
           },
           {
+            path: "expertwallet",
+            element: <WalletPage />,
+          },
+          {
             path: "getcertified",
             element: <SkillList />,
           },
@@ -371,6 +410,10 @@ const appRouter = createBrowserRouter([
           {
             path: "mybookings",
             element: <CustomerBookings />,
+          },
+          {
+            path: "myqueries",
+            element: <MyQueries />,
           },
           {
             path: "recentmeetings",

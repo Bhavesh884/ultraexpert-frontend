@@ -297,7 +297,46 @@ const SignUpAsExpert = () => {
     const newEducation = education.filter((_, i) => i !== index);
     setEducation(newEducation);
   };
+  const handleSkipEducation = async () => {
+    const cookies = document.cookie.split("; ");
+    const jsonData = {};
 
+    cookies.forEach((item) => {
+      const [key, value] = item.split("=");
+      jsonData[key] = value;
+    });
+
+    setIsLoading(true);
+    try {
+      const response = await axios.post(
+        "/experts/",
+        {
+          action: 2,
+          education_json: [],
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${jsonData.access_token}`,
+          },
+        }
+      );
+
+      const data = response.data;
+      if (!data || data.status === 400 || data.status === 401) {
+        console.log("Something went wrong");
+        setIsLoading(false);
+        return;
+      }
+      setIsLoading(false);
+      console.log(data, education);
+      setIsComplete(true);
+      setCurrStep((prevStep) => prevStep + 1);
+      setIsComplete(false);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   const handleEducationForm = async (e) => {
     e.preventDefault();
     const cookies = document.cookie.split("; ");
@@ -362,7 +401,47 @@ const SignUpAsExpert = () => {
     const newSkills = skills.filter((_, i) => i !== index);
     setSkills(newSkills);
   };
+  const handleSkipSkill = async (e) => {
+    setIsLoading(true);
+    const cookies = document.cookie.split("; ");
+    const jsonData = {};
 
+    cookies.forEach((item) => {
+      const [key, value] = item.split("=");
+      jsonData[key] = value;
+    });
+    // const skillJson = { skill_json: skills };
+    // console.log(skillJson);
+    try {
+      const response = await axios.post(
+        "/experts/",
+        {
+          action: 3,
+          skill_json: [],
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${jsonData.access_token}`,
+          },
+        }
+      );
+      const data = response.data;
+      if (!data || data.status === 400 || data.status === 401) {
+        console.log("Something went wrong");
+        setIsLoading(false);
+        return;
+      }
+      console.log(data, skills);
+      setIsComplete(true);
+      setCurrStep((prevStep) => prevStep + 1);
+      setIsComplete(false);
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error.message);
+      setIsLoading(false);
+    }
+  };
   const handleSkillForm = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -487,6 +566,47 @@ const SignUpAsExpert = () => {
       setIsLoading(false);
     }
   };
+  const handleSkipAchievements = async () => {
+    setIsLoading(true);
+    const cookies = document.cookie.split("; ");
+    const jsonData = {};
+
+    cookies.forEach((item) => {
+      const [key, value] = item.split("=");
+      jsonData[key] = value;
+    });
+    // const achievementJson = { achievements_json: achievements };
+    // console.log(achievementJson);
+    try {
+      const response = await axios.post(
+        "/experts/",
+        {
+          action: 6,
+          achievements_json: [],
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${jsonData.access_token}`,
+          },
+        }
+      );
+      const data = response.data;
+      if (!data || data.status === 400 || data.status === 401) {
+        console.log("Something went wrong");
+        setIsLoading(false);
+        return;
+      }
+      setIsLoading(false);
+      console.log(data, achievements);
+      setIsComplete(true);
+      setCurrStep((prevStep) => prevStep + 1);
+      setIsComplete(false);
+    } catch (error) {
+      console.log(error.message);
+      setIsLoading(false);
+    }
+  };
 
   const [experience, setExperience] = useState([]);
   const [experienceForm, setExperienceForm] = useState({
@@ -572,6 +692,48 @@ const SignUpAsExpert = () => {
       setIsLoading(false);
     }
   };
+  const handleSkipEXP = async () => {
+    setIsLoading(true);
+    const cookies = document.cookie.split("; ");
+    const jsonData = {};
+
+    cookies.forEach((item) => {
+      const [key, value] = item.split("=");
+      jsonData[key] = value;
+    });
+    // const experienceJson = { experience_json: experience };
+    // console.log(experienceJson);
+    try {
+      const response = await axios.post(
+        "/experts/",
+        {
+          action: 4,
+          experience_json: [],
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${jsonData.access_token}`,
+          },
+        }
+      );
+      console.log(response, "experience");
+      const data = response.data;
+      if (!data || data.status === 400 || data.status === 401) {
+        console.log("Something went wrong");
+        setIsLoading(false);
+        return;
+      }
+      setIsLoading(false);
+      console.log(data, experienceForm);
+      setIsComplete(true);
+      setCurrStep((prevStep) => prevStep + 1);
+      setIsComplete(false);
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+    }
+  };
 
   const [accInfo, setAccInfo] = useState({
     account_holder: "",
@@ -647,6 +809,7 @@ const SignUpAsExpert = () => {
       }
       setIsComplete(true);
       navigate("/");
+      window.location.reload();
     } catch (error) {
       console.log(error.message);
     }
@@ -748,17 +911,29 @@ const SignUpAsExpert = () => {
                   value={personalInfo.dob}
                   onChange={(e) => {
                     const selectedDate = new Date(e.target.value);
-                    const year = selectedDate.getFullYear();
-                    const month = String(selectedDate.getMonth() + 1).padStart(
-                      2,
-                      "0"
-                    );
-                    const day = String(selectedDate.getDate()).padStart(2, "0");
-                    const formattedDate = `${year}-${month}-${day}`;
-                    setPersonalInfo({
-                      ...personalInfo,
-                      dob: formattedDate,
-                    });
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0); // Reset today's time to midnight
+
+                    if (selectedDate > today) {
+                      alert(
+                        "Please enter a date that is not greater than today."
+                      );
+                      setPersonalInfo({ ...personalInfo, dob: "" }); // Reset the date input
+                    } else {
+                      const year = selectedDate.getFullYear();
+                      const month = String(
+                        selectedDate.getMonth() + 1
+                      ).padStart(2, "0");
+                      const day = String(selectedDate.getDate()).padStart(
+                        2,
+                        "0"
+                      );
+                      const formattedDate = `${year}-${month}-${day}`;
+                      setPersonalInfo({
+                        ...personalInfo,
+                        dob: formattedDate,
+                      });
+                    }
                   }}
                   className="border border-solid border-gray-300 px-2 py-2 rounded-md mb-4"
                 />
@@ -790,19 +965,32 @@ const SignUpAsExpert = () => {
                       value={personalInfo.anniversary_date}
                       onChange={(e) => {
                         const selectedDate = new Date(e.target.value);
-                        const year = selectedDate.getFullYear();
-                        const month = String(
-                          selectedDate.getMonth() + 1
-                        ).padStart(2, "0");
-                        const day = String(selectedDate.getDate()).padStart(
-                          2,
-                          "0"
-                        );
-                        const formattedDate = `${year}-${month}-${day}`;
-                        setPersonalInfo({
-                          ...personalInfo,
-                          anniversary_date: formattedDate,
-                        });
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0); // Reset today's time to midnight
+
+                        if (selectedDate > today) {
+                          alert(
+                            "Please enter a date that is not greater than today."
+                          );
+                          setPersonalInfo({
+                            ...personalInfo,
+                            anniversary_date: "",
+                          }); // Reset the date input
+                        } else {
+                          const year = selectedDate.getFullYear();
+                          const month = String(
+                            selectedDate.getMonth() + 1
+                          ).padStart(2, "0");
+                          const day = String(selectedDate.getDate()).padStart(
+                            2,
+                            "0"
+                          );
+                          const formattedDate = `${year}-${month}-${day}`;
+                          setPersonalInfo({
+                            ...personalInfo,
+                            anniversary_date: formattedDate,
+                          });
+                        }
                       }}
                       className="border border-solid border-gray-300 px-2 py-2 rounded-md w-full mb-4"
                     />
@@ -1258,7 +1446,19 @@ const SignUpAsExpert = () => {
                   </tbody>
                 </table>
               </div>
-              <div className="flex justify-center md:justify-end md:mx-20 mb-8">
+              <div className="flex gap-4 justify-center md:justify-end md:mx-20 mb-8">
+                <button
+                  className="flex items-center gap-1 bg-white text-gray-600 border border-solid border-gray-300  p-2 w-full sm:w-auto rounded-sm"
+                  onClick={() => {
+                    handleSkipEducation();
+                    window.scrollTo({
+                      top: 0,
+                      behavior: "smooth", // This smooth scrolls to the top
+                    });
+                  }}
+                >
+                  Skip for now
+                </button>
                 <button
                   type="submit"
                   disabled={loading}
@@ -1357,7 +1557,19 @@ const SignUpAsExpert = () => {
                     </tbody>
                   </table>
                 </div>
-                <div className="flex justify-center md:justify-end mt-4 sm:mt-2">
+                <div className="flex gap-4 justify-center md:justify-end mt-4 sm:mt-2">
+                  <button
+                    className="flex items-center gap-1 bg-white text-gray-600 border border-solid border-gray-300  p-2 w-full sm:w-auto rounded-sm"
+                    onClick={() => {
+                      handleSkipSkill();
+                      window.scrollTo({
+                        top: 0,
+                        behavior: "smooth", // This smooth scrolls to the top
+                      });
+                    }}
+                  >
+                    Skip for now
+                  </button>
                   <button
                     className={`${
                       loading
@@ -1519,7 +1731,19 @@ const SignUpAsExpert = () => {
                   </table>
                 </div>
               </div>
-              <div className="flex justify-center md:justify-end md:mx-20 mb-8">
+              <div className="flex gap-4 justify-center md:justify-end md:mx-20 mb-8">
+                <button
+                  className="flex items-center gap-1 bg-white text-gray-600 border border-solid border-gray-300  p-2 w-full sm:w-auto rounded-sm"
+                  onClick={() => {
+                    handleSkipAchievements();
+                    window.scrollTo({
+                      top: 0,
+                      behavior: "smooth", // This smooth scrolls to the top
+                    });
+                  }}
+                >
+                  Skip for now
+                </button>
                 <button
                   type="submit"
                   disabled={loading}
@@ -1687,7 +1911,19 @@ const SignUpAsExpert = () => {
                   </table>
                 </div>
               </div>
-              <div className="flex justify-center md:justify-end md:mx-20 mb-8">
+              <div className="flex gap-4 justify-center md:justify-end md:mx-20 mb-8">
+                <button
+                  className="flex items-center gap-1 bg-white text-gray-600 border border-solid border-gray-300  p-2 w-full sm:w-auto rounded-sm"
+                  onClick={() => {
+                    handleSkipEXP();
+                    window.scrollTo({
+                      top: 0,
+                      behavior: "smooth", // This smooth scrolls to the top
+                    });
+                  }}
+                >
+                  Skip for now
+                </button>
                 <button
                   type="submit"
                   disabled={loading}

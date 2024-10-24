@@ -222,7 +222,7 @@ const Navbar = () => {
                     <img
                       src={localStorage.getItem("profile")}
                       alt="profile"
-                      className="w-10 h-10 rounded-full object-cover object-center"
+                      className="w-9 h-11 rounded-full object-cover object-top "
                     />
                   </div>
                   {isDropdownOpen && (
@@ -233,6 +233,14 @@ const Navbar = () => {
                       >
                         Home
                       </Link>
+                      {localStorage.getItem("isExpert") === "true" && (
+                        <Link
+                          className="no-underline text-black text-center py-2 pb-2 border-b border-solid border-slate-300"
+                          to={"/queries"}
+                        >
+                          Customers Queries
+                        </Link>
+                      )}
                       <Link
                         to={
                           localStorage.getItem("isExpert") === "true"
@@ -308,9 +316,9 @@ const Navbar = () => {
         </div>
         {isMenuOpen && (
           <div className="fixed inset-0 flex justify-end z-30">
-            <div className="w-60 shadow-md bg-white p-4 space-y-4 h-full">
+            <div className="w-60 shadow-md bg-[#f3f3f3] p-4 space-y-4 h-full">
               <MdClose
-                className="text-3xl bg-gray-300/40 rounded-sm"
+                className="text-3xl p-1 bg-[#2A2A2A] text-white rounded-sm"
                 onClick={toggleMenu}
               />
               <div className="flex flex-col gap-4">
@@ -324,7 +332,7 @@ const Navbar = () => {
                         <img
                           src={localStorage.getItem("profile")}
                           alt="profile"
-                          className="w-10 h-10 rounded-full object-cover object-center"
+                          className="w-9 h-11 rounded-full object-cover object-top"
                         />
                       </div>
                       {!isDropdownOpen ? (
@@ -338,10 +346,18 @@ const Navbar = () => {
                         <Link
                           to={"/"}
                           className="no-underline text-[#575757] text-center font-semibold"
-                          onClick={()=> setIsMenuOpen(!isMenuOpen)}
+                          onClick={() => setIsMenuOpen(!isMenuOpen)}
                         >
                           Home
                         </Link>
+                        {localStorage.getItem("isExpert") === "true" && (
+                          <Link
+                            className="no-underline text-[#575757] text-center font-semibold"
+                            to={"/queries"}
+                          >
+                            Customers Queries
+                          </Link>
+                        )}
                         <Link
                           to={
                             localStorage.getItem("isExpert") === "true"
@@ -354,7 +370,7 @@ const Navbar = () => {
                               ? "font-extrabold"
                               : "font-medium hover:underline hover:scale-105"
                           } relative no-underline text-[#575757] text-center font-semibold`}
-                          onClick={()=> setIsMenuOpen(!isMenuOpen)}
+                          onClick={() => setIsMenuOpen(!isMenuOpen)}
                         >
                           Dashboard
                         </Link>
@@ -364,7 +380,7 @@ const Navbar = () => {
                           <Link
                             to="/favourites"
                             className="no-underline text-[#575757] text-center justify-center flex items-center gap-2 font-semibold"
-                            onClick={()=> setIsMenuOpen(!isMenuOpen)}
+                            onClick={() => setIsMenuOpen(!isMenuOpen)}
                           >
                             Favourites <FaRegHeart />
                           </Link>
@@ -373,7 +389,7 @@ const Navbar = () => {
                           <Link
                             to={"/login"}
                             className="relative w-fit md:w-full text-center  bg-[#2A2A2A] px-5 rounded-sm font-medium no-underline text-white"
-                            onClick={()=> setIsMenuOpen(!isMenuOpen)}
+                            onClick={() => setIsMenuOpen(!isMenuOpen)}
                           >
                             Sign In
                           </Link>
@@ -401,7 +417,7 @@ const Navbar = () => {
                             <Link
                               to="expertdashboard/editprofile"
                               className="no-underline"
-                              onClick={()=> setIsMenuOpen(!isMenuOpen)}
+                              onClick={() => setIsMenuOpen(!isMenuOpen)}
                             >
                               <li className="flex gap-3 items-center pb-2 border-b border-solid border-slate-300 font-semibold  text-[#575757]">
                                 <FaUser />
@@ -409,8 +425,9 @@ const Navbar = () => {
                               </li>
                             </Link>
                             <Link to="expertdashboard" className="no-underline">
-                              <li className="flex gap-3 items-center pb-2 border-b border-solid border-slate-300 font-semibold  text-[#575757] "
-                              onClick={()=> setIsMenuOpen(!isMenuOpen)}
+                              <li
+                                className="flex gap-3 items-center pb-2 border-b border-solid border-slate-300 font-semibold  text-[#575757] "
+                                onClick={() => setIsMenuOpen(!isMenuOpen)}
                               >
                                 <MdSpaceDashboard />
                                 Dashboard
@@ -419,7 +436,7 @@ const Navbar = () => {
                             <Link
                               to="expertdashboard/leaderboard"
                               className="no-underline"
-                              onClick={()=> setIsMenuOpen(!isMenuOpen)}
+                              onClick={() => setIsMenuOpen(!isMenuOpen)}
                             >
                               <li className="flex gap-3 items-center pb-2 border-b border-solid border-slate-300 font-semibold text-[#575757] ">
                                 <FaMedal />
@@ -429,7 +446,7 @@ const Navbar = () => {
                             <Link
                               to="expertdashboard/myBookings"
                               className="no-underline"
-                              onClick={()=> setIsMenuOpen(!isMenuOpen)}
+                              onClick={() => setIsMenuOpen(!isMenuOpen)}
                             >
                               <li className="flex gap-3 items-center pb-2 border-b border-solid border-slate-300 font-semibold text-[#575757] ">
                                 <IoBookmarksSharp />
@@ -439,7 +456,10 @@ const Navbar = () => {
 
                             <li
                               className="flex gap-3 items-center pb-2 border-b border-solid border-slate-300 font-semibold text-[#575757] "
-                              onClick={() => (getAllQualifiedSkills(), setIsMenuOpen(!isMenuOpen))}
+                              onClick={() => (
+                                getAllQualifiedSkills(),
+                                setIsMenuOpen(!isMenuOpen)
+                              )}
                             >
                               <div className="no-underline">
                                 <RiCustomerService2Fill />
@@ -449,16 +469,17 @@ const Navbar = () => {
                             <Link
                               to="expertdashboard/myservices"
                               className="no-underline"
-                              onClick={()=> setIsMenuOpen(!isMenuOpen)}
+                              onClick={() => setIsMenuOpen(!isMenuOpen)}
                             >
                               <li className="flex items-center gap-3  pb-2 border-b border-solid border-slate-300 font-semibold text-[#575757] ">
                                 <FaChalkboardTeacher />
                                 My services
                               </li>
                             </Link>
-                            <li className="flex gap-3 items-center pb-2 border-b border-solid border-slate-300 font-semibold text-[#575757]
+                            <li
+                              className="flex gap-3 items-center pb-2 border-b border-solid border-slate-300 font-semibold text-[#575757]
                             "
-                            onClick={()=> setIsMenuOpen(!isMenuOpen)}
+                              onClick={() => setIsMenuOpen(!isMenuOpen)}
                             >
                               <FaWallet />
                               Wallet
@@ -466,7 +487,7 @@ const Navbar = () => {
                             <Link
                               to="expertdashboard/chats"
                               className="no-underline"
-                              onClick={()=> setIsMenuOpen(!isMenuOpen)}
+                              onClick={() => setIsMenuOpen(!isMenuOpen)}
                             >
                               <li className="flex gap-3 items-center pb-2 border-b border-solid border-slate-300 font-semibold text-[#575757] ">
                                 <BsFillChatSquareTextFill />
@@ -476,7 +497,7 @@ const Navbar = () => {
                             <Link
                               to={"expertdashboard/getcertified"}
                               className="no-underline cursor-pointer flex gap-3 items-center pb-2 border-b border-solid border-slate-300 font-semibold text-[#575757]"
-                              onClick={()=> setIsMenuOpen(!isMenuOpen)}
+                              onClick={() => setIsMenuOpen(!isMenuOpen)}
                             >
                               <BsFillPatchCheckFill />
                               Get Certified
@@ -488,14 +509,16 @@ const Navbar = () => {
                       (location === "/customerdashboard" ||
                         location === "/customerdashboard/chats" ||
                         location === "/customerdashboard/mybookings" ||
+                        location === "/customerdashboard/myqueries" ||
                         location === "/customerdashboard/recentmeetings" ||
-                        location === "/customerdashboard/transactionhistory") && (
+                        location ===
+                          "/customerdashboard/transactionhistory") && (
                         <div className="mt-4">
                           <ul className="p-0 flex flex-col gap-6 ">
                             <Link
                               to="customerdashboard"
                               className="no-underline"
-                              onClick={()=> setIsMenuOpen(!isMenuOpen)}
+                              onClick={() => setIsMenuOpen(!isMenuOpen)}
                             >
                               <li className="flex gap-3 items-center font-semibold text-[#575757] pb-2 border-b border-solid border-slate-300">
                                 <FaUserAlt className="" />
@@ -503,9 +526,18 @@ const Navbar = () => {
                               </li>
                             </Link>
                             <Link
+                              to="customerdashboard/myqueries"
+                              className="no-underline"
+                            >
+                              <li className="flex gap-3 items-center font-semibold text-[#575757] pb-2 border-b border-solid border-slate-300">
+                                <FaUserAlt className="" />
+                                My Queries
+                              </li>
+                            </Link>
+                            <Link
                               to="customerdashboard/chats"
                               className="no-underline"
-                              onClick={()=> setIsMenuOpen(!isMenuOpen)}
+                              onClick={() => setIsMenuOpen(!isMenuOpen)}
                             >
                               <li className="flex gap-3 items-center font-semibold text-[#575757] pb-2 border-b border-solid border-slate-300">
                                 <BsFillChatSquareTextFill className="" />
@@ -515,7 +547,7 @@ const Navbar = () => {
                             <Link
                               to="customerdashboard/mybookings"
                               className="no-underline"
-                              onClick={()=> setIsMenuOpen(!isMenuOpen)}
+                              onClick={() => setIsMenuOpen(!isMenuOpen)}
                             >
                               <li className="flex gap-3 items-center font-semibold text-[#575757] pb-2 border-b border-solid border-slate-300">
                                 <IoBookmarksSharp className="" />
@@ -525,7 +557,7 @@ const Navbar = () => {
                             <Link
                               to="customerdashboard/recentmeetings"
                               className="no-underline"
-                              onClick={()=> setIsMenuOpen(!isMenuOpen)}
+                              onClick={() => setIsMenuOpen(!isMenuOpen)}
                             >
                               <li className="flex gap-3 items-center font-semibold text-[#575757] pb-2 border-b border-solid border-slate-300">
                                 <MdVideoChat className="" />
@@ -535,7 +567,7 @@ const Navbar = () => {
                             <Link
                               to="customerdashboard/transactionhistory"
                               className="no-underline"
-                              onClick={()=> setIsMenuOpen(!isMenuOpen)}
+                              onClick={() => setIsMenuOpen(!isMenuOpen)}
                             >
                               <li className="flex gap-3 items-center font-semibold text-[#575757] pb-2 border-b border-solid border-slate-300">
                                 <FaHistory className="" />
@@ -543,8 +575,9 @@ const Navbar = () => {
                               </li>
                             </Link>
 
-                            <li className="flex gap-3 items-center font-semibold text-[#575757] pb-2 border-b border-solid border-slate-300"
-                            onClick={()=> setIsMenuOpen(!isMenuOpen)}
+                            <li
+                              className="flex gap-3 items-center font-semibold text-[#575757] pb-2 border-b border-solid border-slate-300"
+                              onClick={() => setIsMenuOpen(!isMenuOpen)}
                             >
                               <FaWallet className="" />
                               Wallet
@@ -557,7 +590,7 @@ const Navbar = () => {
                   <Link
                     to={"/login"}
                     className="relative text-center bg-[#2A2A2A] px-5 rounded-sm py-2 font-medium no-underline text-white"
-                    onClick={()=> setIsMenuOpen(!isMenuOpen)}
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
                   >
                     Sign In
                   </Link>
@@ -569,7 +602,7 @@ const Navbar = () => {
                       ? "font-extrabold"
                       : "font-medium hover:underline hover:scale-105"
                   } relative no-underline text-[#575757] pb-2 border-b border-solid border-slate-300 font-semibold flex items-center gap-3`}
-                  onClick={()=> setIsMenuOpen(!isMenuOpen)}
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
                 >
                   <GrUserExpert />
                   Experts
@@ -581,7 +614,7 @@ const Navbar = () => {
                       ? "font-extrabold"
                       : "font-medium hover:underline hover:scale-105"
                   } relative no-underline text-[#575757] pb-2 border-b border-solid border-slate-300 font-semibold flex items-center gap-3`}
-                  onClick={()=> setIsMenuOpen(!isMenuOpen)}
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
                 >
                   <AiFillCustomerService />
                   Services
@@ -593,7 +626,7 @@ const Navbar = () => {
                       ? "font-extrabold"
                       : "font-medium hover:underline hover:scale-105"
                   } relative no-underline text-[#575757] pb-2 border-b border-solid border-slate-300 font-semibold flex items-center gap-3`}
-                  onClick={()=> setIsMenuOpen(!isMenuOpen)}
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
                 >
                   <PiBookBookmarkFill />
                   Blog
@@ -605,7 +638,7 @@ const Navbar = () => {
                       ? "font-extrabold"
                       : "font-medium hover:underline hover:scale-105"
                   } relative no-underline text-[#575757] pb-2 border-b border-solid border-slate-300 font-semibold flex items-center gap-3`}
-                  onClick={()=> setIsMenuOpen(!isMenuOpen)}
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
                 >
                   <LiaChessRookSolid />
                   About us
