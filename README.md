@@ -53,7 +53,7 @@
 1. **Clone the repo:**
 
    ```bash
-   git clone https://github.com/yourusername/UltraXperts.git
+   git clone https://github.com/bhavesh884/Ultraxperts-frontend.git
    cd UltraXperts
    ```
 
@@ -63,9 +63,6 @@
    # Frontend
    npm install
 
-   # Backend
-   cd backend
-   npm install
    ```
 
 ---
@@ -92,14 +89,9 @@ REACT_APP_JITSI_DOMAIN=meet.jit.si
 
 ## **🚀 Running the App**
 
-1. **Start backend:**
 
-   ```bash
-   cd backend
-   npm start
-   ```
 
-2. **Start frontend:**
+1. **Start frontend:**
    ```bash
    npm start
    ```
